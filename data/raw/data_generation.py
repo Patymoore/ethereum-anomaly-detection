@@ -49,7 +49,7 @@ n_triangulation_groups = int(50 * factor)  # 50 * 20 = 1000 grupos de triangulac
 normal_transactions_count = n_transactions - (n_triangulation_groups * 3)
 
 # Generamos un pool de billeteras (por ejemplo, 1000 billeteras únicas)
-n_wallets = 1000
+n_wallets = 2354
 wallets = [random_hex_string(40) for _ in range(n_wallets)]
 
 # Asignamos una probabilidad aleatoria de que una billetera sea sospechosa (este dato se usará en análisis posterior)
@@ -79,7 +79,7 @@ normal_data = {
     "input_data_length": [],
     "transaction_status": [],
     "anomaly_flag": [],  # 0 para normal, 1 para anómala
-    "transaction_type": []  # "transfer", "contract_interaction", "triangulation"
+    "transaction_type": []  # "transfer" o "contract_interaction"
 }
 
 for _ in range(normal_transactions_count):
@@ -94,12 +94,12 @@ for _ in range(normal_transactions_count):
     value_eth = np.round(np.random.exponential(scale=1.0), 6)
     # Definimos si es interacción con contrato
     is_contract_interaction = np.random.choice([0, 1], p=[0.7, 0.3])
-    # Asignamos el tipo de transacción en función de is_contract_interaction
+    # Asignamos el tipo de transacción: "contract_interaction" si is_contract_interaction == 1, de lo contrario "transfer"
     transaction_type = "contract_interaction" if is_contract_interaction == 1 else "transfer"
     # Para transacciones normales, el 5% se marcará como anómalo (por otros motivos)
     anomaly_flag = 1 if random.random() < 0.05 else 0
     # Generamos los valores de gas según si es anómalo o no
-    gas_limit, gas_used = generate_gas(anomalous=(anomaly_flag==1), is_contract_interaction=is_contract_interaction)
+    gas_limit, gas_used = generate_gas(anomalous=(anomaly_flag == 1), is_contract_interaction=is_contract_interaction)
     gas_price = np.random.randint(1, 200)
     transaction_fee = gas_limit * gas_price
     nonce = np.random.randint(0, 1000)
@@ -130,7 +130,7 @@ for _ in range(normal_transactions_count):
 normal_df = pd.DataFrame(normal_data)
 
 # --- Generación de transacciones de triangulación ---
-# Estas transacciones se consideran anómalas y se etiquetan con "triangulation"
+# Estas transacciones se consideran anómalas (anomaly_flag = 1), pero el campo transaction_type se asigna de acuerdo a is_contract_interaction
 triangulation_data = {
     "tx_hash": [],
     "block_number": [],
@@ -149,7 +149,7 @@ triangulation_data = {
     "input_data_length": [],
     "transaction_status": [],
     "anomaly_flag": [],
-    "transaction_type": []
+    "transaction_type": []  # Se asigna según is_contract_interaction
 }
 
 for group_id in range(1, n_triangulation_groups + 1):
@@ -172,10 +172,10 @@ for group_id in range(1, n_triangulation_groups + 1):
         timestamp = random_date(start_date, end_date)
         value_eth = np.round(np.random.exponential(scale=1.0), 6)
         is_contract_interaction = np.random.choice([0, 1], p=[0.7, 0.3])
-        # Para las transacciones de triangulación, se asigna siempre anomaly_flag = 1
+        # Para las transacciones de triangulación se asigna siempre anomaly_flag = 1
         anomaly_flag = 1
-        # El tipo de transacción será "triangulation"
-        transaction_type = "triangulation"
+        # Asignamos el tipo de transacción de forma normal, sin etiquetarlo como "triangulation"
+        transaction_type = "contract_interaction" if is_contract_interaction == 1 else "transfer"
         gas_limit, gas_used = generate_gas(anomalous=True, is_contract_interaction=is_contract_interaction)
         gas_price = np.random.randint(1, 200)
         transaction_fee = gas_limit * gas_price
@@ -213,4 +213,4 @@ df["timestamp"] = pd.to_datetime(df["timestamp"])
 
 # Visualizamos algunas filas y guardamos el dataset a CSV
 print(df.head())
-df.to_csv("synthetic_eth_transactions.csv", index=False)
+df.to_csv("eth_transactions.csv", index=False)
