@@ -18,27 +18,6 @@ ethereum-anomaly-detection/
 │   ├── 04_model_development.ipynb
 │   └── 05_results_visualization.ipynb
 │
-├── src/
-│   ├── __init__.py
-│   ├── data/
-│   │   ├── __init__.py
-│   │   ├── data_loader.py  # Functions to load data
-│   │   └── preprocessor.py # Data preprocessing functions
-│   │
-│   ├── features/
-│   │   ├── __init__.py
-│   │   ├── feature_engineering.py  # Feature creation functions
-│   │   └── triangulation.py        # Triangulation detection functions
-│   │
-│   ├── models/
-│   │   ├── __init__.py
-│   │   ├── anomaly_detector.py     # Anomaly detection models
-│   │   └── evaluation.py           # Model evaluation functions
-│   │
-│   └── visualization/
-│       ├── __init__.py
-│       ├── visualize.py            # Visualization functions
-│       └── network_viz.py          # Network visualization functions
 │
 ├── requirements.txt        # Project dependencies
 └── README.md               # Project documentation
@@ -184,7 +163,7 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 ### 1. Set Up the Environment
 ```bash
 # Clone the repository (or create the directory structure manually)
-git clone https://github.com/yourusername/ethereum-anomaly-detection.git
+git clone https://github.com/patymoore/ethereum-anomaly-detection.git
 cd ethereum-anomaly-detection
 
 # Create and activate a virtual environment
