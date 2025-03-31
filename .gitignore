@@ -19,12 +19,17 @@ wheels/
 *.egg-info/
 .installed.cfg
 *.egg
+etc/
+include/
+share/
+bin/
 
 # Entornos virtuales
 venv/
 env/
 ENV/
 eth-proy/
+eth-env/
 
 # Archivos de Jupyter Notebook
 .ipynb_checkpoints
